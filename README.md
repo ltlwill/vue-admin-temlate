@@ -1,5 +1,5 @@
 # 本项目是基于vue-admin-template之上改造的，原项目地址：http://panjiachen.github.io/vue-admin-template
-# 在原项目上升级了element-ui、axios、vue-router、vuex等依赖，并开发自己的一些业务
+# 在原项目上升级了element-ui、axios、vue-router、vuex等依赖，并开发自己的一些业务，可以对接后端服务 vue-admin-template-service
 # vue-admin-template
 
 English | [简体中文](./README-zh.md)
