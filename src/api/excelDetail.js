@@ -7,3 +7,11 @@ export function getList(params) {
     params
   })
 }
+
+export function deleteDetailByIds(params) {
+  return request({
+    url: '/excel/detail/delete',
+    method: 'get',
+    params
+  })
+}

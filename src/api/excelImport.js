@@ -7,3 +7,11 @@ export function getList(params) {
     params
   })
 }
+
+export function deleteImpByIds(params) {
+  return request({
+    url: '/excel/imp/delete',
+    method: 'get',
+    params
+  })
+}

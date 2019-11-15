@@ -1,5 +1,6 @@
 <template>
   <div v-cloak class="app-container">
+    <el-button style="margin-bottom:20px" type="primary" icon="el-icon-delete" @click="handleDeleteButtonClick">删除选中</el-button>
     <el-form ref="conditionForm" :model="conditionForm" :inline="true" style="float: right" @submit.native.prevent>
       <el-form-item>
         <!-- <el-input v-model="conditionForm.keyword" placeholder="输入关键字搜索" clearable>
@@ -36,12 +37,14 @@
       border
       fit
       highlight-current-row
+      @selection-change="handleSelectionChange"
     >
       <!-- <el-table-column align="center" label="ID" width="95">
         <template slot-scope="scope">
           {{ scope.$index }}
         </template>
       </el-table-column> -->
+      <el-table-column type="selection" width="55" />
       <el-table-column type="index" width="50" />
       <el-table-column prop="impId" label="导入编号" min-width="15" />
       <el-table-column label="户名" min-width="50">
@@ -86,7 +89,7 @@
 </template>
 
 <script>
-import { getList } from '@/api/excelDetail'
+import { getList, deleteDetailByIds } from '@/api/excelDetail'
 // import Pagination from '@/components/Pagination'
 
 export default {
@@ -155,6 +158,45 @@ export default {
         params[type] = this.conditionForm.keyword
       }
       return Object.assign({}, params, this.conditionForm)
+    },
+    handleSelectionChange(val) {
+      this.selections = val
+    },
+    handleDeleteButtonClick() {
+      if (!this.selections || !this.selections.length) {
+        this.$message({
+          showClose: true,
+          message: `请选择要删除的数据`,
+          type: 'warning'
+        })
+        return
+      }
+      this.$confirm(`确定要删除选中的${this.selections.length}条明细吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => { this.doDeleteImpDetail() })
+        .catch(() => {})
+    },
+    doDeleteImpDetail() {
+      const me = this
+      const ids = this.selections.map(itm => itm.id)
+      const params = { ids: ids.join(',') }
+      deleteDetailByIds(params).then(res => {
+        me.$message({
+          showClose: true,
+          message: `删除成功`,
+          type: 'success'
+        })
+        const newList = []
+        me.listQuery.list.forEach(itm => {
+          if (!ids.includes(itm.id)) {
+            newList.push(itm)
+          }
+        })
+        me.listQuery.list = newList
+      })
     }
   }
 }

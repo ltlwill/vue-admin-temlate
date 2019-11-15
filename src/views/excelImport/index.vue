@@ -1,6 +1,7 @@
 <template>
   <div v-cloak class="app-container">
     <el-button style="margin-bottom:20px" type="primary" icon="el-icon-upload2" @click="importDialogVisible = true">导入</el-button>
+    <el-button style="margin-bottom:20px" type="primary" icon="el-icon-delete" @click="handleDeleteButtonClick">删除选中</el-button>
     <el-form ref="conditionForm" :model="conditionForm" :inline="true" style="float: right" @submit.native.prevent>
       <el-form-item>
         <el-input
@@ -13,6 +14,7 @@
         </el-input>
       </el-form-item>
     </el-form>
+
     <el-table
       v-loading="listLoading"
       :data="listQuery.list"
@@ -20,12 +22,15 @@
       border
       fit
       highlight-current-row
+      @selection-change="handleSelectionChange"
     >
+      >
       <!-- <el-table-column align="center" label="ID" width="95">
         <template slot-scope="scope">
           {{ scope.$index }}
         </template>
       </el-table-column> -->
+      <el-table-column type="selection" width="55" />
       <el-table-column type="index" width="50" />
       <el-table-column prop="id" label="编号" min-width="15" />
       <el-table-column label="文件名" min-width="50">
@@ -55,9 +60,10 @@
         </template>
       </el-table-column>
       <!-- <el-table-column prop="operating" label="操作" width="100">
-        <el-button plain>删除</el-button>
+        <el-button size="small" icon="el-icon-delete" @click="handleDeleteButtonClick">删除</el-button>
       </el-table-column> -->
     </el-table>
+
     <el-pagination
       :current-page="listQuery.pageNum || 1"
       :page-sizes="[10,20,50]"
@@ -101,7 +107,7 @@
 </template>
 
 <script>
-import { getList } from '@/api/excelImport'
+import { getList, deleteImpByIds } from '@/api/excelImport'
 // import Pagination from '@/components/Pagination'
 import downloader from '@/utils/downloader'
 
@@ -178,6 +184,45 @@ export default {
       const pageNum = this.listQuery.pageNum || 1
       const pageSize = this.listQuery.pageSize || 10
       return Object.assign({}, { 'pageNum': pageNum, 'pageSize': pageSize }, this.conditionForm)
+    },
+    handleSelectionChange(val) {
+      this.selections = val
+    },
+    handleDeleteButtonClick() {
+      if (!this.selections || !this.selections.length) {
+        this.$message({
+          showClose: true,
+          message: `请选择要删除的数据`,
+          type: 'warning'
+        })
+        return
+      }
+      this.$confirm(`明细数据将会被删除，确定要删除选中的${this.selections.length}条导入记录吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => { this.doDeleteImp() })
+        .catch(() => {})
+    },
+    doDeleteImp() {
+      const me = this
+      const ids = this.selections.map(itm => itm.id)
+      const params = { ids: ids.join(',') }
+      deleteImpByIds(params).then(res => {
+        me.$message({
+          showClose: true,
+          message: `删除成功`,
+          type: 'success'
+        })
+        const newList = []
+        me.listQuery.list.forEach(itm => {
+          if (!ids.includes(itm.id)) {
+            newList.push(itm)
+          }
+        })
+        me.listQuery.list = newList
+      })
     },
     handleOnExceed(files, fileList) {
       this.$message({

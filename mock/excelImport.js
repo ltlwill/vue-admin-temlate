@@ -25,5 +25,15 @@ export default [
         }
       }
     }
+  },
+  {
+    url: '/excel/imp/delete',
+    type: 'get',
+    response: config => {
+      return {
+        code: 20000,
+        data: {}
+      }
+    }
   }
 ]
