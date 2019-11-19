@@ -16,14 +16,26 @@
           >
             <el-select
               slot="prepend"
-              v-model="conditionForm.type"
-              placeholder="选择类型"
+              v-model="conditionForm.keywordType"
+              placeholder="选择条件"
               clearable
               @change="handleTypeChange"
             >
+              <el-option label="导入编号" value="impId" />
+              <el-option label="文件名" value="fileLowerName" />
               <el-option label="户名" value="accountName" />
               <el-option label="账号" value="accountNo" />
               <el-option label="开户行" value="bankName" />
+              <el-option label="交易日期" value="transactionDate" />
+              <el-option label="交易时间" value="transactionTime" />
+              <el-option label="收入" value="income" />
+              <el-option label="支出" value="expend" />
+              <el-option label="余额" value="balance" />
+              <el-option label="对方户名" value="toAccountName" />
+              <el-option label="对方账号" value="toAccountNo" />
+              <el-option label="对方银行" value="toBankName" />
+              <el-option label="摘要" value="summary" />
+              <el-option label="IP" value="ip" />
             </el-select>
             <el-button slot="append" icon="el-icon-search" @click="doSearch" />
           </el-input>
@@ -46,8 +58,8 @@
       </el-table-column> -->
       <el-table-column type="selection" width="55" />
       <el-table-column type="index" width="50" />
-      <el-table-column prop="impId" label="导入编号" min-width="15" />
-      <el-table-column label="户名" min-width="50">
+      <el-table-column prop="impId" label="导入编号" width="60" />
+      <el-table-column label="户名" min-width="30">
         <template slot-scope="scope">
           {{ scope.row.accountName }}
         </template>
@@ -57,7 +69,7 @@
           <span>{{ scope.row.accountNo }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="开户行" min-width="40">
+      <el-table-column label="开户行" min-width="30">
         <template slot-scope="scope">
           <span>{{ scope.row.bankName }}</span>
         </template>
@@ -67,13 +79,19 @@
           {{ scope.row.transactionDate }}
         </template>
       </el-table-column>
-      <el-table-column label="交易时间" min-width="15">
+      <el-table-column label="交易时间" min-width="20">
         <template slot-scope="scope">
           {{ scope.row.transactionTime }}
         </template>
       </el-table-column>
       <el-table-column prop="income" label="收入" min-width="20" />
       <el-table-column prop="expend" label="支出" min-width="20" />
+      <el-table-column prop="balance" label="余额" min-width="20" />
+      <el-table-column prop="toAccountName" label="对方户名" min-width="30" />
+      <el-table-column prop="toAccountNo" label="对方账号" min-width="30" />
+      <el-table-column prop="toBankName" label="对方银行" min-width="30" />
+      <el-table-column prop="summary" label="摘要" min-width="30" />
+      <el-table-column prop="ip" label="IP" min-width="20" />
     </el-table>
     <el-pagination
       :current-page="listQuery.pageNum || 1"
@@ -124,6 +142,17 @@ export default {
     fetchData(reset) {
       this.listLoading = true
       const params = this.getRequestParams(reset)
+      const numberFields = ['impId', 'income', 'expend', 'balance']
+      // 如果是数字类型的字段且填写的条件值不是数字
+      if (numberFields.includes(params.keywordType) && isNaN(params.keyword)) {
+        this.$message({
+          showClose: true,
+          message: `请填写数字型的条件值`,
+          type: 'warning'
+        })
+        this.listLoading = false
+        return false
+      }
       getList(params).then(response => {
         // this.list = response.data.items
         this.listQuery = response.data || {}
@@ -152,10 +181,10 @@ export default {
       }
       const pageNum = this.listQuery.pageNum || 1
       const pageSize = this.listQuery.pageSize || 10
-      const type = this.conditionForm.type
+      const keywordType = this.conditionForm.keywordType
       const params = { 'pageNum': pageNum, 'pageSize': pageSize }
-      if (type) {
-        params[type] = this.conditionForm.keyword
+      if (keywordType) {
+        params[keywordType] = this.conditionForm.keyword
       }
       return Object.assign({}, params, this.conditionForm)
     },
