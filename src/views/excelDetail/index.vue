@@ -59,6 +59,17 @@
       <el-table-column type="selection" width="55" />
       <el-table-column type="index" width="50" />
       <el-table-column prop="impId" label="导入编号" width="60" />
+      <el-table-column label="文件名" min-width="30">
+        <template slot-scope="scope">
+          <el-link
+            :download="scope.row.fileName"
+            target="_blank"
+            @click="downloadFile(scope.row.fileName)"
+          >
+            {{ scope.row.fileName }}
+          </el-link>
+        </template>
+      </el-table-column>
       <el-table-column label="户名" min-width="30">
         <template slot-scope="scope">
           {{ scope.row.accountName }}
@@ -90,7 +101,7 @@
       <el-table-column prop="toAccountName" label="对方户名" min-width="30" />
       <el-table-column prop="toAccountNo" label="对方账号" min-width="30" />
       <el-table-column prop="toBankName" label="对方银行" min-width="30" />
-      <el-table-column prop="summary" label="摘要" min-width="30" />
+      <el-table-column prop="summary" label="摘要" min-width="30" show-overflow-tooltip />
       <el-table-column prop="ip" label="IP" min-width="20" />
     </el-table>
     <el-pagination
@@ -109,6 +120,7 @@
 <script>
 import { getList, deleteDetailByIds } from '@/api/excelDetail'
 // import Pagination from '@/components/Pagination'
+import downloader from '@/utils/downloader'
 
 export default {
   name: 'ExcelDetail',
@@ -226,6 +238,14 @@ export default {
         })
         me.listQuery.list = newList
       })
+    },
+    fileNameLinkFormatter(fileName) {
+      return process.env.VUE_APP_BASE_API + process.env.VUE_APP_UPLOAD_RESOURCES_PATH + fileName
+    },
+    downloadFile(fileName) {
+      debugger
+      const url = this.fileNameLinkFormatter(fileName)
+      downloader.get(url, fileName)
     }
   }
 }
