@@ -243,7 +243,6 @@ export default {
       return process.env.VUE_APP_BASE_API + process.env.VUE_APP_UPLOAD_RESOURCES_PATH + fileName
     },
     downloadFile(fileName) {
-      debugger
       const url = this.fileNameLinkFormatter(fileName)
       downloader.get(url, fileName)
     }
