@@ -30,7 +30,6 @@ export default {
   },
   computed: {
     title() {
-      debugger
       return this.$store.state.settings.title || ''
     }
   }
