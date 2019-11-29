@@ -2,7 +2,14 @@
   <div v-cloak class="app-container">
     <el-button style="margin-bottom:20px" type="primary" icon="el-icon-upload2" @click="importDialogVisible = true">导入</el-button>
     <el-button style="margin-bottom:20px" type="primary" icon="el-icon-delete" @click="handleDeleteButtonClick">删除选中</el-button>
-    <el-form ref="conditionForm" :model="conditionForm" :inline="true" style="float: right" @submit.native.prevent>
+    <el-form
+      ref="conditionForm"
+      :model="conditionForm"
+      :inline="true"
+      style="float: right"
+      class="biz-condition-form"
+      @submit.native.prevent
+    >
       <el-form-item>
         <el-input
           v-model="conditionForm.keyword"
@@ -118,7 +125,7 @@ export default {
     statusFilter(status) {
       const statusMap = {
         1: 'success',
-        0: 'error'
+        0: 'danger'
       }
       return statusMap[status]
     },

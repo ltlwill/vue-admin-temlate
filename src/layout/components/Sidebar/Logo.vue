@@ -24,8 +24,14 @@ export default {
   },
   data() {
     return {
-      title: 'Vue Admin Template',
+      // title: 'Vue Admin Template',
       logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
+    }
+  },
+  computed: {
+    title() {
+      debugger
+      return this.$store.state.settings.title || ''
     }
   }
 }
@@ -79,4 +85,10 @@ export default {
     }
   }
 }
+</style>
+<style>
+  .sidebar-logo-container > a.sidebar-logo-link{
+    padding: 0 10px;
+    text-align: left;
+  }
 </style>

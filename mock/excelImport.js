@@ -1,13 +1,13 @@
 import Mock from 'mockjs'
 
 const data = Mock.mock({
-  'items|30': [{
+  'items|10': [{
     id: '@id',
     fileName: '@sentence(10, 20)',
     'status|1': ['0', '1'],
     userId: '@cname',
     userName: '@cname',
-    uploadTime: '@datetime'
+    importTime: '@datetime'
   }]
 })
 
@@ -21,7 +21,8 @@ export default [
         code: 20000,
         data: {
           total: items.length,
-          items: items
+          items: items,
+          list: items
         }
       }
     }

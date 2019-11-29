@@ -32,6 +32,17 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
   {
+    path: '/redirect',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/redirect/:path*',
+        component: () => import('@/views/redirect/index')
+      }
+    ]
+  },
+  {
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
@@ -51,32 +62,31 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
     }]
   },
-
   {
-    path: '/excelImport',
+    path: '/excel-import',
     component: Layout,
     children: [
       {
         path: 'index',
-        name: 'Excel导入',
+        name: 'ExcelImport', // 注：这里的name要要与对应的组件名一致，不然keep-alive缓存不生效
         component: () => import('@/views/excelImport/index'),
-        meta: { title: 'Excel导入', icon: 'list' }
+        meta: { title: 'Excel导入', icon: 'list', noCache: false }
       }
     ]
   },
 
   {
-    path: '/excelDetail',
+    path: '/excel-details',
     component: Layout,
     children: [
       {
         path: 'index',
-        name: 'Excel明细',
+        name: 'ExcelDetails', // 注：这里的name要要与对应的组件名一致，不然keep-alive缓存不生效
         component: () => import('@/views/excelDetail/index'),
-        meta: { title: 'Excel明细', icon: 'list' }
+        meta: { title: 'Excel明细', icon: 'list', noCache: false }
       }
     ]
   },
@@ -189,9 +199,24 @@ export const constantRoutes = [
   { path: '*', redirect: '/404', hidden: true }
 ]
 
+/**
+ * asyncRoutes
+ * the routes that need to be dynamically loaded based on user roles
+ */
+export const asyncRoutes = [
+
+]
+
 const createRouter = () => new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  // scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: (to, from, savedPosition) => {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { y: 0 }
+    }
+  },
   routes: constantRoutes
 })
 

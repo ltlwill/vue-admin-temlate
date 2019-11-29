@@ -1,7 +1,14 @@
 <template>
   <div v-cloak class="app-container">
     <el-button style="margin-bottom:20px" type="primary" icon="el-icon-delete" @click="handleDeleteButtonClick">删除选中</el-button>
-    <el-form ref="conditionForm" :model="conditionForm" :inline="true" style="float: right" @submit.native.prevent>
+    <el-form
+      ref="conditionForm"
+      :model="conditionForm"
+      :inline="true"
+      style="float: right"
+      class="biz-condition-form"
+      @submit.native.prevent
+    >
       <el-form-item>
         <!-- <el-input v-model="conditionForm.keyword" placeholder="输入关键字搜索" clearable>
           <el-button slot="append" icon="el-icon-search" @click="doSearch" />
@@ -123,7 +130,8 @@ import { getList, deleteDetailByIds } from '@/api/excelDetail'
 import downloader from '@/utils/downloader'
 
 export default {
-  name: 'ExcelDetail',
+  // 注：这里的组件名称和路由里配置的name要一致，不然keep-alive缓存不生效
+  name: 'ExcelDetails',
   // components: { Pagination },
   filters: {
     statusFilter(status) {
@@ -254,6 +262,6 @@ export default {
     width: 120px;
   }
   .input-with-select-wrap .input-with-select .el-input-group__prepend {
-    background-color: #fff;
+    background-color: rgb(255, 255, 255);
   }
 </style>
