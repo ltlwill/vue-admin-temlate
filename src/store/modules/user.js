@@ -35,7 +35,6 @@ const actions = {
     const { name, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ name: name.trim(), password: password }).then(response => {
-        debugger
         const { data } = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)
@@ -95,6 +94,7 @@ const actions = {
 
   // dynamically modify permissions
   changeRoles({ commit, dispatch }, role) {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async resolve => {
       const token = role + '-token'
 
