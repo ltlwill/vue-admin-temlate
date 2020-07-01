@@ -3,9 +3,12 @@ import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
+const baseURL = process.env.NODE_ENV === 'development'
+  ? process.env.VUE_APP_BASE_API : window.globalConfig.baseURL || process.env.VUE_APP_BASE_API
+
 // create an axios instance
 const service = axios.create({
-  baseURL: window.globalConfig.baseURL || process.env.VUE_APP_BASE_API, // url = base url + request url
+  baseURL: baseURL, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 30 * 1000 // request timeout
 })
